@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // --- CONTROLLERS ---
-const AuthController = require('../controllers/AuthController');
+const AuthController = require('../controllers/authController');
 const ProcessoController = require('../controllers/ProcessoController');
 const TipoPublicidadeController = require('../controllers/TipoPublicidadeController');
 const FreguesiaController = require('../controllers/FreguesiaController');
