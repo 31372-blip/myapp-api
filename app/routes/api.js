@@ -3,10 +3,10 @@ const router = express.Router();
 
 // --- CONTROLLERS ---
 const AuthController = require('../controllers/authController');
-const ProcessoController = require('../controllers/ProcessoController');
-const TipoPublicidadeController = require('../controllers/TipoPublicidadeController');
-const FreguesiaController = require('../controllers/FreguesiaController');
-const RuaController = require('../controllers/RuaController');
+const ProcessoController = require('../controllers/processoController');
+const TipoPublicidadeController = require('../controllers/tipoPublicidadeController');
+const FreguesiaController = require('../controllers/freguesiaController');
+const RuaController = require('../controllers/ruaController');
 
 // --- MIDDLEWARES GERAIS ---
 const authMiddleware = require('../middlewares/authMiddleware');
