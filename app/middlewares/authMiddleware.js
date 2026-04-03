@@ -3,6 +3,12 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 module.exports = async (req, res, next) => {
+    // 1. ADICIONA ESTA EXCEÇÃO AQUI:
+    // Se a rota for login ou register, não pede token!
+    if (req.path.includes('/login') || req.path.includes('/register')) {
+        return next();
+    }
+
     try {
         const authHeader = req.headers.authorization;
 
