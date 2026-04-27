@@ -1,5 +1,7 @@
 module.exports = (user) => {
-    if (!user) return null;
+    if (!user) {
+        return {};
+    }
 
     return {
         id: user._id,

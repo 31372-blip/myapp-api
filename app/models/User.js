@@ -5,25 +5,30 @@ const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        maxlength: 100
     },
 
     email: {
         type: String,
         required: true,
         unique: true,
-        lowercase: true
+        lowercase: true,
+        trim: true
     },
 
     password: {
         type: String,
-        required: true
+        required: true,
+        minlength: 6
     },
 
     nif: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim: true,
+        length: 9
     },
 
     isAdmin: {
@@ -37,28 +42,16 @@ const userSchema = new mongoose.Schema({
 
 // 🔐 Hash automático antes de guardar
 userSchema.pre('save', async function() {
-    // 1. Verifica se a password foi modificada
     if (!this.isModified('password')) return;
 
-    try {
-        // 2. Encripta (Garante que estás a usar bcryptjs como falamos)
-        const salt = await bcrypt.genSalt(10);
-        this.password = await bcrypt.hash(this.password, salt);
-        
-        // Com async/await, NÃO chamamos o next(). 
-        // O simples fim da função indica ao Mongoose que pode continuar.
-    } catch (error) {
-        // Se houver erro, lançamos o erro para ser apanhado pelo catch do Controller
-        throw error;
-    }
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
 });
-
 
 // 🔒 Método para comparar password (login)
 userSchema.methods.comparePassword = async function(password) {
     return bcrypt.compare(password, this.password);
 };
-
 
 // ❌ Remove password quando fizer res.json()
 userSchema.methods.toJSON = function() {

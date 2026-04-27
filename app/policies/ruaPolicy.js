@@ -1,4 +1,6 @@
-const isAdmin = (user) => user.isAdmin === true;
+const isAdmin = (user) => {
+    return user && user.isAdmin === true;
+};
 
 exports.viewAny = () => true;
 exports.view = () => true;

@@ -1,94 +1,83 @@
-const Freguesia = require("../models/Freguesia");
-const freguesiaPolicy = require("../policies/freguesiaPolicy");
-const freguesiaResource = require("../resources/FreguesiaResource");
+const Freguesia = require('../models/Freguesia');
+const freguesiaPolicy = require('../policies/freguesiaPolicy');
+const freguesiaResource = require('../resources/FreguesiaResource');
 
-// LISTAR
 exports.index = async (req, res) => {
     try {
         if (!freguesiaPolicy.viewAny(req.user)) {
-            return res.status(403).json({ message: "Não autorizado" });
+            return res.status(403).json({ error: 'Não autorizado' });
         }
 
         const freguesias = await Freguesia.find();
-        return res.json(freguesias.map(freguesiaResource));
 
+        return res.status(200).json(freguesias.map(freguesiaResource));
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: "Erro ao buscar freguesias" });
+        return res.status(500).json({ error: 'Erro ao buscar freguesias' });
     }
 };
 
-// MOSTRAR
 exports.show = async (req, res) => {
     try {
-        // Se usares o loadFreguesia nas rotas, podes usar req.freguesia._id
-        const freguesia = await Freguesia.findById(req.params.id);
-
-        if (!freguesia) {
-            return res.status(404).json({ message: "Freguesia não encontrada" });
+        if (!freguesiaPolicy.view(req.user, req.freguesia)) {
+            return res.status(403).json({ error: 'Não autorizado' });
         }
 
-        if (!freguesiaPolicy.view(req.user, freguesia)) {
-            return res.status(403).json({ message: "Não autorizado" });
-        }
-
-        return res.json(freguesiaResource(freguesia));
-
+        return res.status(200).json(freguesiaResource(req.freguesia));
     } catch (error) {
-        return res.status(500).json({ message: "Erro ao buscar freguesia" });
+        console.error(error);
+        return res.status(500).json({ error: 'Erro ao buscar freguesia' });
     }
 };
 
-// CRIAR
 exports.store = async (req, res) => {
     try {
         if (!freguesiaPolicy.create(req.user)) {
-            return res.status(403).json({ message: "Não autorizado" });
+            return res.status(403).json({ error: 'Não autorizado' });
         }
 
         const freguesia = await Freguesia.create(req.body);
-        return res.status(201).json(freguesiaResource(freguesia));
 
+        return res.status(201).json(freguesiaResource(freguesia));
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: "Erro ao criar freguesia", details: error.message });
+        return res.status(500).json({ error: 'Erro ao criar freguesia' });
     }
 };
 
-// ATUALIZAR
 exports.update = async (req, res) => {
     try {
-        const freguesia = await Freguesia.findById(req.params.id);
-
-        if (!freguesia) return res.status(404).json({ message: "Freguesia não encontrada" });
-
-        if (!freguesiaPolicy.update(req.user, freguesia)) {
-            return res.status(403).json({ message: "Não autorizado" });
+        if (!freguesiaPolicy.update(req.user, req.freguesia)) {
+            return res.status(403).json({ error: 'Não autorizado' });
         }
 
-        const updated = await Freguesia.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        return res.status(200).json(freguesiaResource(updated));
+        const updated = await Freguesia.findByIdAndUpdate(
+            req.freguesia._id,
+            req.body,
+            {
+                new: true,
+                runValidators: true
+            }
+        );
 
+        return res.status(200).json(freguesiaResource(updated));
     } catch (error) {
-        return res.status(500).json({ message: "Erro ao atualizar freguesia" });
+        console.error(error);
+        return res.status(500).json({ error: 'Erro ao atualizar freguesia' });
     }
 };
 
-// REMOVER
 exports.destroy = async (req, res) => {
     try {
-        const freguesia = await Freguesia.findById(req.params.id);
-
-        if (!freguesia) return res.status(404).json({ message: "Freguesia não encontrada" });
-
-        if (!freguesiaPolicy.delete(req.user, freguesia)) {
-            return res.status(403).json({ message: "Não autorizado" });
+        if (!freguesiaPolicy.delete(req.user, req.freguesia)) {
+            return res.status(403).json({ error: 'Não autorizado' });
         }
 
-        await Freguesia.findByIdAndDelete(req.params.id);
-        return res.status(200).json({ message: "Freguesia removida" });
+        await Freguesia.findByIdAndDelete(req.freguesia._id);
 
+        return res.status(200).json({ message: 'Freguesia removida com sucesso' });
     } catch (error) {
-        return res.status(500).json({ message: "Erro ao remover freguesia" });
+        console.error(error);
+        return res.status(500).json({ error: 'Erro ao remover freguesia' });
     }
 };

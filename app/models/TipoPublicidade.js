@@ -4,9 +4,13 @@ const tipoPublicidadeSchema = new mongoose.Schema({
     publicidade: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        maxlength: 45
     },
-    processos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Processo' }]
+    processos: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Processo'
+    }]
 }, {
     timestamps: true
 });

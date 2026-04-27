@@ -4,7 +4,8 @@ const freguesiaSchema = new mongoose.Schema({
     freguesia: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        maxlength: 255
     }
 }, {
     timestamps: true

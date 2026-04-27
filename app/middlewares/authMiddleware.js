@@ -3,12 +3,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 module.exports = async (req, res, next) => {
-    // 1. ADICIONA ESTA EXCEÇÃO AQUI:
-    // Se a rota for login ou register, não pede token!
-    if (req.path.includes('/login') || req.path.includes('/register')) {
-        return next();
-    }
-
     try {
         const authHeader = req.headers.authorization;
 
@@ -23,7 +17,9 @@ module.exports = async (req, res, next) => {
 
         // Busca o utilizador no MongoDB
         const user = await User.findById(decoded.id);
-        if (!user) return res.status(401).json({ error: 'Utilizador não encontrado' });
+        if (!user) {
+            return res.status(401).json({ error: 'Utilizador não encontrado' });
+        }
 
         // Popula req.user
         req.user = {
@@ -34,7 +30,7 @@ module.exports = async (req, res, next) => {
             nif: user.nif
         };
 
-        next();
+        return next();
     } catch (error) {
         return res.status(401).json({ error: 'Token inválido ou expirado' });
     }

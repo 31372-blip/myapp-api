@@ -1,8 +1,11 @@
-exports.viewAny = (user) => true;
-exports.create = (user) => true;
+exports.viewAny = () => true;
+exports.create = () => true;
 
 exports.view = (user, processo) => {
-    return user.id === processo.user_id || user.isAdmin;
+    return user && processo && (
+        user.isAdmin === true ||
+        user._id.toString() === processo.user.toString()
+    );
 };
 
 exports.update = exports.view;

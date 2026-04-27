@@ -19,11 +19,11 @@ const apiLimiter = rateLimit({
     message: { error: 'Muitas requests, tenta mais tarde' }
 });
 
-app.use('/api/', apiLimiter);
+app.use('/api', apiLimiter);
 
 // Rota base
 app.get('/', (req, res) => {
-    res.send("API a funcionar 🚀");
+    return res.status(200).send('API a funcionar 🚀');
 });
 
 // Rotas
@@ -31,7 +31,12 @@ const apiRoutes = require('./app/routes/api');
 app.use('/api', apiRoutes);
 
 // Conexão Mongo
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/myapp';
+const MONGO_URI = process.env.MONGO_URI;
+
+if (!MONGO_URI) {
+    console.error('MONGO_URI não definida no .env');
+    process.exit(1);
+}
 
 mongoose.connect(MONGO_URI)
     .then(() => console.log('MongoDB conectado ✅'))
@@ -42,4 +47,6 @@ mongoose.connect(MONGO_URI)
 
 // Porta
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor a correr na porta ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`Servidor a correr na porta ${PORT}`);
+});

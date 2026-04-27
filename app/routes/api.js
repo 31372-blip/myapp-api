@@ -42,7 +42,9 @@ router.post('/login', AuthController.login);
 router.use(authMiddleware);
 
 router.post('/logout', AuthController.logout);
-router.get('/user', (req, res) => res.json(req.user));
+router.get('/user', (req, res) => {
+    return res.status(200).json(req.user);
+});
 
 // --- PROCESSOS ---
 router.get('/processos', ProcessoController.index);

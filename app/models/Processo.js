@@ -4,17 +4,22 @@ const processoSchema = new mongoose.Schema({
     processo: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        maxlength: 45
     },
 
     alvara: {
         type: String,
-        required: false
+        trim: true,
+        maxlength: 45,
+        default: null
     },
 
     alojamentoLocal: {
         type: String,
-        required: false
+        trim: true,
+        maxlength: 10,
+        default: null
     },
 
     validade: {
@@ -32,13 +37,13 @@ const processoSchema = new mongoose.Schema({
     rua: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Rua',
-        required: false
+        required: true
     },
 
     tipoPublicidade: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'TipoPublicidade',
-        required: false
+        required: true
     }
 
 }, {
