@@ -15,7 +15,7 @@ exports.updateRuaRules = [
         .isString().withMessage('Coordenada deve ser texto')
         .isLength({ max: 45 }).withMessage('Coordenada máximo 45 caracteres'),
 
-    body('freguesias_id')
+    body('freguesia')
         .optional()
         .notEmpty().withMessage('Freguesia é obrigatória')
         .isMongoId().withMessage('Freguesia inválida')
